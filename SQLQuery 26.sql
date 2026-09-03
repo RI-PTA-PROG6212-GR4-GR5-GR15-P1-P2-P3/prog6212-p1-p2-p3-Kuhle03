@@ -17,3 +17,12 @@ VALUES
         'Point-to-point road route, closed to traffic.');
 GO
 
+INSERT INTO Categories (EventID, Name, Distance, MaxParticipants)
+VALUES
+    (1, '5km Fun Run', 3.00, 100),
+    (1, '10km Race', 5.00, 120),
+    (2, '40km Cycle', 10.00, 100),
+    (2, '80km Cycle', 90.00, 40),
+    (3, '10km Race', 10.00, 150),
+    (3, '21km Half Marathon', 21.10, 100);
+GO
