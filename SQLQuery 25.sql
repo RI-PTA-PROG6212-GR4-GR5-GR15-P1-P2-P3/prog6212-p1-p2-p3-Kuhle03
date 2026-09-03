@@ -21,6 +21,18 @@ CREATE TABLE Events (
 );
 GO
 
+CREATE TABLE Categories (
+    CategoryID      INT IDENTITY(1,1) PRIMARY KEY,
+    EventID         INT             NOT NULL,
+    Name            NVARCHAR(50)    NOT NULL,
+    Distance        DECIMAL(5,2)    NOT NULL,
+    MaxParticipants INT             NOT NULL DEFAULT 100,
+    CONSTRAINT FK_Categories_Events FOREIGN KEY (EventID)
+        REFERENCES Events(EventID)
+);
+GO
+
+
 
 
 
