@@ -35,4 +35,9 @@ VALUES
     (2, 5);  -- Khanyi enters the 10km Race (Pretoria)
 GO
 
+ INSERT INTO Results (EnrolmentID, FinishTime, Position)
+VALUES
+    (1, '00:20:34', 1),
+    (3, '00:39:10', 4);
+GO
 
