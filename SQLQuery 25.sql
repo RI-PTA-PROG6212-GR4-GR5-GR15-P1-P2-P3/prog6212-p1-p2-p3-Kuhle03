@@ -31,6 +31,22 @@ CREATE TABLE Categories (
         REFERENCES Events(EventID)
 );
 GO
+    
+CREATE TABLE EventEnrolments (
+    EnrolmentID     INT IDENTITY(1,1) PRIMARY KEY,
+    ParticipantID   INT             NOT NULL,
+    CategoryID      INT             NOT NULL,
+    EnrolmentDate   DATETIME        NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT FK_Enrolments_Participants FOREIGN KEY (ParticipantID)
+        REFERENCES Participants(ParticipantID),
+    CONSTRAINT FK_Enrolments_Categories FOREIGN KEY (CategoryID)
+        REFERENCES Categories(CategoryID),
+    CONSTRAINT UQ_Participant_Category UNIQUE (ParticipantID, CategoryID)
+);
+GO
+
+
+
 
 
 
