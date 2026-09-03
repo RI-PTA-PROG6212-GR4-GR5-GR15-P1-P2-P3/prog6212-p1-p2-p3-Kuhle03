@@ -26,3 +26,13 @@ VALUES
     (3, '10km Race', 10.00, 150),
     (3, '21km Half Marathon', 21.10, 100);
 GO
+
+
+INSERT INTO EventEnrolments (ParticipantID, CategoryID)
+VALUES
+    (1, 1),  -- Anzatshilidzi enters the 5km Fun Run
+    (1, 3),  -- Khanyi enters the 40km Cycle
+    (2, 2),  -- Khomotso enters the 10km Race (Durban)
+    (2, 5);  -- Khomotso enters the 10km Race (Pretoria)
+GO
+
