@@ -38,6 +38,6 @@ Screenshot of a successful green build:
 
 Video Walkthrough  
 
-YouTube (unlisted) link: [Insert your video link here]  
+YouTube (unlisted) link: [https://www.youtube.com/channel/UCEPrXZmpqCZgYe8tRHZCT6A ]  
 
 The video walks through the planning documents, ERD calls, endpoint plan decisions, and it runs the SQL script live, in SSMS.
