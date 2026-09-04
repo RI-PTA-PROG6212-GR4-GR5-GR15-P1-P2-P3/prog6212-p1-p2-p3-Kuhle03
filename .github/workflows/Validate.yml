@@ -1,0 +1,59 @@
+name: Validate Repository Structure
+
+# Runs automatically whenever you push to the repo, and can also be
+# triggered manually from the Actions tab on GitHub.
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  check-structure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check /docs folder exists
+        run: |
+          if [ ! -d "docs" ]; then
+            echo "❌ /docs folder is missing"
+            exit 1
+          fi
+          echo "✅ /docs folder found"
+
+      - name: Check for ERD image (PNG or PDF)
+        run: |
+          if ! find docs -iname "*erd*" \( -iname "*.png" -o -iname "*.pdf" \) | grep -q .; then
+            echo "❌ No ERD image (PNG/PDF) found in /docs"
+            exit 1
+          fi
+          echo "✅ ERD image found"
+
+      - name: Check for API endpoint plan (PDF or Markdown)
+        run: |
+          if ! find docs -iname "*endpoint*" \( -iname "*.pdf" -o -iname "*.md" \) | grep -q .; then
+            echo "❌ No API endpoint plan (PDF/Markdown) found in /docs"
+            exit 1
+          fi
+          echo "✅ API endpoint plan found"
+
+      - name: Check for SQL script
+        run: |
+          if ! find docs -iname "*.sql" | grep -q .; then
+            echo "❌ No .sql script found in /docs"
+            exit 1
+          fi
+          echo "✅ SQL script found"
+
+      - name: Check README exists at repo root
+        run: |
+          if [ ! -f "README.md" ]; then
+            echo "❌ README.md is missing from the repository root"
+            exit 1
+          fi
+          echo "✅ README.md found"
+
+      - name: All checks passed
+        run: echo "🎉 Repository structure is valid."
+          echo Add other actions to build,
+          echo test, and deploy your project.
