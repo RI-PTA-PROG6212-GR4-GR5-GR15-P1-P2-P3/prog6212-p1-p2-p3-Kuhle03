@@ -33,8 +33,8 @@ CI/CD
 A GitHub Actions workflow (.github/workflows/validate-repo.yml) runs on every push and verifies the repo layout stays ok, meaning the /docs folder exists, and it includes the ERD, the endpoint plan, and the SQL script … plus that this README file is there too.  
 
 Screenshot of a successful green build:  
+<img width="1321" height="485" alt="Screenshot 2026-09-04 093335" src="https://github.com/user-attachments/assets/cee7a517-5d1b-41bd-b516-5765db9a1a59" />
 
-[Insert screenshot here once your workflow has run successfully]  
 
 Video Walkthrough  
 
