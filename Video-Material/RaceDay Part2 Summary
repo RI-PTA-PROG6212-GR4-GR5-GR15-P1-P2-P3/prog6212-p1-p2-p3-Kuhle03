@@ -1,0 +1,49 @@
+How Part 2 will be   
+The RaceDay project uses different parts to kinda organise the code, and then connect it to the database.  
+
+- AppDbContext : Connects the application to the database.  
+- Models : Represent the information used in the system.  
+- DTOs : Control the information sent to and received from the API.  
+- Database connection : Tells the application which database to connect to.  
+- Swagger : Allows us to view and test the API endpoints  
+- Entity Framework Core : Helps the application work with the database and create migrations  
+- Unit tests : Check whether individual parts of the application work correctly  
+- GitHub Actions : Automatically builds and tests the project when changes are pushed to GitHub  
+
+The tests check both successful and unsuccessful actions , like registering an account logging in, creating events, entering events, and recording results.  
+
+- The project uses whole-number IDs instead of GUIDs to identify records  
+- When someone tries to register using an email address that already exists, the system returns 409 Conflict.  
+- The GitHub Actions workflow uses version actions/checkout@v4, while the notes mention version @v6.  
+- The database design and API plan include event distance, event type, and session-based login.  
+
+These details should be checked against the lecturer's requirements before submitting, just to be safe.  
+
+3. Next steps before submitting  
+Before submitting the assignment, the following tasks should be completed  
+1. Create the database migration using the Package Manager Console in Visual Studio.  
+2. Check that the database connection string in appsettings.json is correct  
+3. Press F5 to run the API and test the endpoints using Swagger.  
+4. In Visual Studio, select Test → Run All to run the tests  
+5. Run dotnet test in the Part2-API folder to check whether the tests pass  
+6. Check that your GitHub repository has the required commits.  
+7. Make sure the GitHub Actions workflow finishes successfully  
+8. Add a screenshot of the successful build to the README file  
+9. Record the required video showing the API, code, and tests, then add its link to the README  
+10. Make sure you understand the code well enough to explain it in your own words.  
+
+4. Test summary  
+According to the video summary spreadsheet, the project lists 176 test methods  
+
+Type of test  Number of methods  
+Unit tests 119  
+Integration tests 57  
+Total 176  
+
+Unit tests check individual parts of the application, like login, registration, profiles, events, categories, enrolments, and results.  
+Integration tests check whether different parts of the application work together correctly.  
+
+The numbers above come from the spreadsheet but you still need to run the tests in Visual Studio to confirm the actual test results, for real.  
+
+Conclusion  
+Part 2 focuses on building and testing the RaceDay API, it uses Entity Framework Core to work with the database, Swagger to test the API endpoints, and automated tests to check that the system works correctly. GitHub Actions helps check the project when changes are uploaded, and yeah that’s basically the idea.
