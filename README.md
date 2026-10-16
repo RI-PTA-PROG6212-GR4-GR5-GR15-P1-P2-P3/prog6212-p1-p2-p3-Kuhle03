@@ -52,8 +52,8 @@ Demo accounts (password for all four: `Password123!`):
  Role | Email
 Organiser | AnzaTshilidzi@raceday.co.za  
 Organiser | Zotha@raceday.co.za  
-Participant | KGMolomo@example.com  
-Participant | Gumede@example.com  
+Participant | KGMolomo@gmail.com  
+Participant | Gumede@gmail.com  
 
  Try it in Swagger
 1. Open `POST /api/auth/login`, click Try it out, enter email and password, Execute. Swagger now holds your session cookie.  
