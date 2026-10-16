@@ -106,4 +106,5 @@ Auth `POST /api/auth/register, POST /api/auth/login , POST /api/auth/logout`
 Profile `GET /api/profile, PUT /api/profile`  
 Events `GET /api/events, GET /api/events/{id} , POST /api/events, PUT /api/events/{id}, DELETE /api/events/{id}`
 
+YOUTUBE VIDEO LINK:https://youtu.be/rjBcMFrfgvI 
 
