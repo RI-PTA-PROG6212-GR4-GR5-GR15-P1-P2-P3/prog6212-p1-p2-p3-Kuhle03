@@ -1,43 +1,109 @@
+RaceDay
 
- RaceDay
+RaceDay is , kind of a web based event management system, built for the South African road running, walking and cycling community. Event Organisers create events, plus categories and results. Then participants browse what’s on, enter events, and kinda track their own results, later.
 
-RaceDay is this kinda full-stack web based event management system, made for the South African road running, walking and cycling community. It enables Event Organisers to set up and steer events, categories, and participant results too, while Participants can scroll through what’s coming up, join races, and also see their own performance timeline from previous entries.
+This repository was assembled in parts for the PROG6212 Portfolio of Evidence:
 
-This repository holds **Part 1** of the Portfolio of Evidence: system planning and database design for the RaceDay platform.
+| Part | Folder | What it contains
 
- Roles
+| Part 1 | `/docs` | PDF, Section A and B, SQL script  
+| Part 2 | `/Part2-API` | ASP.NET Core Web API, EF Core Code-First, session login, Swagger, unit tests  
 
-Organiser
-An Organiser logs in and creates, updates, and manages events. They can add new events, sort out the categories inside each event (like 5km, 10km) , see which people enrolled, and then capture participants' results once the race day is done. Kinda straightforward but also very hands on.
+Two roles, not really complicated but still
 
-**Participant**
-A Participant views events that Organisers made, enrols into a category for an event they actually want to join, and can browse their personal history of past enrolments and results, across all the events they’ve put their name down for.
+Organiser: creates, edits, deletes their own events. They also define categories per event, like age or distance ( Under 20, Senior, 10km, 21km ), and then they can see everyone enrolled in their events. After the event, Organisers capture finish times and finishing positions.
 
-Repo structure  
-/docs  
-  RaceDay_ERD.png                 -- Entity Relationship Diagram  
-  RaceDay_API_Endpoint_Plan.md   -- API endpoint plan  
-  RaceDay_Database_Script.sql    -- Database creation and seed script  
+Participant: browses events and categories, then enters an event by picking a category. They can view and cancel their own enrolments, and view their own results too.
 
-README.md  
-.github/workflows/validate-repo.yml  
+Both roles can register, log in, and update their own profile. But a Participant cannot use Organiser features, and an Organiser cannot use Participant features. so it is locked down by role, basically.
 
-Setup Intructions  
-Clone the repository.  
-Open SQL Server Management Studio (SSMS).  
-Open docs/RaceDay_Database_Script.sql and run it against your SQL Server instance — it builds the RaceDayDB database, all tables, and loads a few starter rows.  
-Take a look at docs/RaceDay_ERD.png for the data model, and also docs/RaceDay_API_Endpoint_Plan.md for what the API surface is supposed to be, right before Part 2.  
+ Part 2 – RESTful API
 
-CI/CD  
+ Tech stack
+ASP.NET Core Web API (.NET 8, C#) · Entity Framework Core 8 (Code-First) · SQL Server · BCrypt password hashing · server-side sessions · Swagger (Swashbuckle) · xUnit tests · GitHub Actions
 
-A GitHub Actions workflow (.github/workflows/validate-repo.yml) runs on every push and verifies the repo layout stays ok, meaning the /docs folder exists, and it includes the ERD, the endpoint plan, and the SQL script … plus that this README file is there too.  
+Security, in steps that you can follow
 
-Screenshot of a successful green build:  
-<img width="1321" height="485" alt="Screenshot 2026-09-04 093335" src="https://github.com/user-attachments/assets/cee7a517-5d1b-41bd-b516-5765db9a1a59" />
+1. A user registers and selects a role. The password is hashed with (Crypt) before saving, so the actual password is never stored in the database.  
+2. During login, the server creates a session and writes the user’s ID and role into it. The browser keeps only a session cookie.  
+3. Every protected endpoint checks that session. If no session → 401 Unauthorized. If wrong role → 403 Forbidden.  
+4. Organisers can only edit their own events, categories and results. Participants can only view and cancel their own enrolments.
+
+ Setup (first time)
+You need: Visual Studio 2022 (or the .NET 8 SDK), and SQL Server (Developer, Express or LocalDB).
+
+1. Clone the repository.  
+2. Open `Part2-API/src/RaceDay.Api/appsettings.json` and verify the connection string. If your SQL instance uses a custom host, change `Server=localhost` to the right one, for example `Server=localhost\SQLEXPRESS` or `Server=(localdb)\MSSQLLocalDB`.  
+3. Create the first migration (Code-First). In a terminal inside `Part2-API/src/RaceDay.Api`:
+   ```
+   dotnet tool install -global dotnet-ef
+   dotnet ef migrations add InitialCreate
+   
+(Visual Studio: Package Manager Console, `Add-Migration InitialCreate`.) Commit the new `Migrations` folder.
+4. That’s it for the database. The app applies the migration and also seeds demo data the first time it starts. It creates a database called `RaceDayApiDb`.
+
+ Run
+cd Part2-API/src/RaceDay.Api
+dotnet run
+
+Open http://localhost:5080/swagger (Visual Studio often opens it automatically when you press F5).
+Demo accounts (password for all four: `Password123!`):
+
+ Role | Email
+Organiser | AnzaTshilidzi@raceday.co.za  
+Organiser | Zotha@raceday.co.za  
+Participant | KGMolomo@example.com  
+Participant | Gumede@example.com  
+
+ Try it in Swagger
+1. Open `POST /api/auth/login`, click Try it out, enter email and password, Execute. Swagger now holds your session cookie.  
+2. Call any endpoint. Log in as an Organiser to create events, and log in as a Participant to enrol.  
+3. If you need to switch roles, call `POST /api/auth/logout`, then sign in again.
+
+ Testing
+All tests are under `Part2-API/tests/RaceDay.Tests` (xUnit + Moq). Run them from the solution folder:
+
+cd Part2-API
+dotnet test
+
+Visual Studio: go to Test > Test Explorer > Run All. No SQL Server needed, because the tests use a fresh in-memory database.
+
+Each test uses Arrange / Act / Assert and its name follows `Method_Scenario_ExpectedResult`. Every area has success and failure scenarios.
+Area | Example scenarios | Where
+
+Registration | valid user, duplicate email, email used by the other role, invalid role, password stored hashed | `Unit/AuthControllerTests.cs`  
+Login | valid credentials (session started), wrong password, unknown email, email in different case | `Unit/AuthControllerTests.cs`  
+Missing or invalid data | missing email, missing password, short password, bad event type, zero distance | `Unit/DtoValidationTests.cs`  
+Not logged in / wrong role | no session gives 401, Participant on Organiser endpoint gives 403, and the reverse | `Unit/SessionAuthorizeAttributeTests.cs`  
+Event management | Organiser creates, updates and deletes own events; cannot touch another Organiser's; unknown ID gives 404 | `Unit/EventsControllerTests.cs`  
+| Categories | create, duplicate name, age category with no distance, limit lower than enrolled | `Unit/CategoriesControllerTests.cs`  
+| Enrolments | enrolment recorded (participant + category + event), duplicate, full category, unknown category, past event | `Unit/EnrolmentsControllerTests.cs`  
+Results | capture, duplicate, position taken, other Organiser's event, Participant sees only own results | `Unit/ResultsControllerTests.cs`  
+Profile | view and update own profile, email already used |`Unit/ProfileControllerTests.cs`  
+| Whole API together | register, login, protected calls and 401/403 through the real session pipeline | `Integration/`  
+
+Unit tests talk to controllers directly. Moq swaps the password service out, and a small `FakeSession` replaces the login session. The `Integration` tests start the API in memory and send real HTTP requests, including a session cookie.
+
+ Project layout
+Part2-API/
+  RaceDay.sln
+  src/RaceDay.Api/
+    Controllers/   one controller per area
+    Data/          AppDbContext + demo data seeder
+    Models/        entity classes, and Models/DTOs for request and response objects
+    Services/      password hashing
+    Helpers/       session login check (SessionAuthorize) and constants
+    Program.cs     database, session and Swagger set-up
+  tests/RaceDay.Tests/
+    Unit/  Integration/  Helpers/
+
+Endpoints
+
+Full plan with request bodies and responses: [`docs/RaceDay_API_Endpoint_Plan.md`](docs/RaceDay_API_Endpoint_Plan.md).
+
+| Area | Endpoints  
+Auth `POST /api/auth/register, POST /api/auth/login , POST /api/auth/logout`  
+Profile `GET /api/profile, PUT /api/profile`  
+Events `GET /api/events, GET /api/events/{id} , POST /api/events, PUT /api/events/{id}, DELETE /api/events/{id}`
 
 
-Video Walkthrough  
-
-YouTube (unlisted) link: [https://www.youtube.com/channel/UCEPrXZmpqCZgYe8tRHZCT6A ]  
-
-The video walks through the planning documents, ERD calls, endpoint plan decisions, and it runs the SQL script live, in SSMS.
