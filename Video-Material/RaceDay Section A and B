@@ -1,0 +1,113 @@
+RACEDAY – SECTION A AND SECTION B
+
+INTRODUCTION  
+RaceDay is , an API for running, walking, and cycling events. Event organisers create and manage the events , then participants enter events and later check their results. This bit, the presentation explains the database design (Section A) and then the API plan (Section B) , kinda like how everything connects.
+
+WHAT THE PRESENTATION COVERS  
+1. The RaceDay database design.  
+2. The six main database tables and how they link up.  
+3. How that design turns into API routes.  
+4. The main routes, login, profiles, events, categories, enrolments, and results, all that stuff.
+
+SECTION A: ENTITY RELATIONSHIP DIAGRAM (ERD)  
+An ERD is a diagram that shows the database tables and how they are connected. Doing the database first helps confirm the info stays organized before actual coding begins.
+
+THE SIX ENTITIES  
+1. Organisers: People who create and manage events.  
+2. Participants: People who enter events and check their results.  
+3. Events: Info about an event, like the name, date, location, and the route.  
+4. Categories: The different distances or options, like 5 km or 10 km.  
+5. EventEnrolments: Records which participant entered which category.  
+6. Results: Stores a participant's finishing time and position for an enrolment.
+
+RELATIONSHIPS BETWEEN TABLES  
+- One organiser can manage many events.  
+- One event can have many categories.  
+- One participant can have many enrolments.  
+- One category can have many enrolments.  
+- One enrolment produces one result in this design.
+
+WHY EVENT ENROLMENTS IS NEEDED  
+A participant can enter many categories, and each category can include many participants too. This is a many to many relationship. The EventEnrolments table basically links Participants and Categories, and it stores each entry, separately.
+
+SECTION B: API ENDPOINT PLAN  
+An API helps different parts of a system talk to each other. An endpoint is a route that an application uses to request or change information. Below are the planned functions, roughly.
+
+AUTHENTICATION AND PROFILE  
+- POST /api/auth/register – Creates an Organiser or Participant account. Anyone can use this route.  
+- POST /api/auth/login – Logs a user in and starts a session. Anyone can use this route.  
+- GET /api/profile – Shows the profile of the logged-in user.  
+- PUT /api/profile – Updates the logged-in user's own profile.
+
+EVENTS AND CATEGORIES  
+- GET /api/events – Shows upcoming events. Public access.  
+- POST /api/events – Creates a new event. Organisers only.  
+- PUT /api/events/{id} – Updates an event owned by the organiser.  
+- GET /api/events/{id}/categories – Shows categories for a particular event. Public access.  
+- POST /api/events/{id}/categories – Adds a category to an event. Organisers only.
+
+ENROLMENTS AND RESULTS  
+- POST /api/enrolments – Lets a participant enter a category.  
+- GET /api/enrolments/my – Shows the logged-in participant's enrolment history.  
+- POST /api/results – Lets an organiser record a result.  
+- GET /api/events/{id}/results – Shows the results for an event. Public access.  
+- GET /api/participants/{id}/results – Shows a participant's results. The participant can view their own results, and an organiser can view them also.
+
+IMPORTANT DESIGN IDEAS  
+1. Nested routes: Categories are placed under an event route, because categories belong to an event.  
+2. Status codes: 404 means the requested item was not found. 403 means the item may exist, but the user is not permitted to access it.  
+3. Role based access: Rules decide whether public, participant, or organiser can use each route.  
+4. Personal routes: Routes like “my enrolments” show the logged-in user's own information, no more.
+
+CONCLUSION  
+Section A explains how the database is organised (no drama). Section B explains how users and applications will access that data through API routes. Next up, Section C, where the SQL script is used to create and add starting data into the database.
+
+RACEDAY – PART 2 SUMMARY
+
+1. HOW PART 2 USES THE CLASS NOTES  
+- The project uses AppDbContext, Models, DTOs, a database connection setting, and Swagger, all together.  
+- Entity Framework Core tools are included, so the database migration command can be used.  
+- Unit tests are kept in a separate RaceDay.Tests project within the same solution.  
+- Tests use Arrange, Act, Assert (AAA): prepare the test, run the action, and then check the result.  
+- Test names are fairly clear, like: Login_WrongPassword_ReturnsUnauthorized.  
+- Some authentication tests use a mocked password service.  
+- The tests check outcomes such as success, not found, and unauthorised responses.  
+- Both successful and unsuccessful cases are tested for registration, login, events, categories, enrolments, and results.  
+- GitHub Actions is set up to restore, build, and test the project.  
+- The README includes a testing section, plus a table of test scenarios.
+
+2. DIFFERENCES FROM THE CLASS NOTES  
+- This project uses whole-number IDs instead of GUIDs. It’s done to keep it consistent with the ERD and SQL script.  
+- A duplicate email returns 409 Conflict, which basically signals the request clashes with info already stored.  
+- The GitHub workflow uses actions/checkout@v4. The notes use @v6 so this could be swapped if the lecturer wants the exact match.  
+- The Part 1 ERD, SQL script, and endpoint plan include event distance, event type, and session login. If an earlier video got recorded, it might not match the newest documents.
+
+3. NEXT STEPS CHECKLIST  
+1. Run Add-Migration InitialCreate in Visual Studio's Package Manager Console, and commit the new Migrations folder.  
+2. Check appsettings.json and fix the database connection string if your SQL Server includes a specific instance name, not just the default.  
+3. Hit F5 to run the API, then test the endpoints in Swagger. There’s a spreadsheet with a demo login: thandeka@raceday.co.za and Password123! Use it only if it is still valid for your project.  
+4. In Visual Studio, choose Test > Run All, and confirm there are no failed tests.  
+5. Open a terminal in the Part2-API folder and run: dotnet test. Make sure all tests pass.
+6. Push at least 20 genuine commits if that’s part of the assignment thing, you know, like they asked.  
+7. Then check the GitHub Actions workflow, make sure it ends green / success status, not red.  
+8. Take a screenshot of the successful build, and toss it into the README.  
+9. Record an unlisted YouTube video, showing the running API, the code, and the unit tests too ( like not just one of them ), then add the video link into the README as well.  
+10. Read through the controllers and some tests also, so you can explain what they do, in your own words.  
+
+4. TEST SUMMARY  
+The spreadsheet shows 119 unit test methods, and 57 integration test methods. so… 176 total test methods, in all.  
+
+Unit tests check the smaller pieces of the project  
+- AuthControllerTests.cs – registration, login, and logout (16 methods)  
+- DtoValidationTests.cs – missing or bad data (24 methods)  
+- SessionAuthorizeAttributeTests.cs – not logged in and wrong-role access (9 methods)  
+- EventsControllerTests.cs – event management (15 methods)  
+- CategoriesControllerTests.cs – categories (16 methods)  
+- EnrolmentsControllerTests.cs – enrolments (15 methods)  
+- ResultsControllerTests.cs – results (16 methods)  
+- ProfileControllerTests.cs – profiles (8 methods)  
+
+Integration tests check that things work together , properly  
+- AuthTests.cs – registration, login, and profile through the session process (15 methods)  
+- EventTests.cs – events and categories end to end , (20 methods)  
+- EnrolmentAndResultTests.cs – enrolments and results end to end (22 methods)
