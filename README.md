@@ -108,3 +108,7 @@ Events `GET /api/events, GET /api/events/{id} , POST /api/events, PUT /api/event
 
 YOUTUBE VIDEO LINK:https://youtu.be/rjBcMFrfgvI 
 
+Screenshot of the Workflow 
+<img width="1215" height="427" alt="Screenshot 2026-10-16 234001" src="https://github.com/user-attachments/assets/6852cc29-1ab5-4f7f-bf53-aa34e096f9ca" />
+
+
