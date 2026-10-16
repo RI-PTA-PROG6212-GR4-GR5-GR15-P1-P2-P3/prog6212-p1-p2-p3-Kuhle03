@@ -1,0 +1,30 @@
+name: RaceDay Part 2 CI
+
+on:
+push:
+branches: [ "main" ]
+pull_request:
+branches: [ "main" ]
+workflow_dispatch:
+
+jobs:
+build:
+runs-on: ubuntu-latest
+
+steps:
+- name: Get project code
+uses: actions/checkout@v4
+
+- name: Set up .NET 8
+uses: actions/setup-dotnet@v4
+with:
+dotnet-version: '8.0.x'
+
+- name: Restore project
+run: dotnet restore
+
+- name: Build project
+run: dotnet build --no-restore
+
+- name: Run tests
+run: dotnet test --verbosity norma
