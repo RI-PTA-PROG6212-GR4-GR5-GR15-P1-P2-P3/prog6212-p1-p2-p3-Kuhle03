@@ -1,0 +1,33 @@
+
+name: RaceDay CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore API packages
+        run: dotnet restore Part2-API/RaceDay.sln
+
+      - name: Build API
+        run: dotnet build Part2-API/RaceDay.sln --configuration Release --no-restore
+
+      - name: Restore MVC packages
+        run: dotnet restore Part3-MVC/RaceDayMvc.sln
+
+      - name: Build MVC
+        run: dotnet build Part3-MVC/RaceDayMvc.sln --configuration Release --no-restore
