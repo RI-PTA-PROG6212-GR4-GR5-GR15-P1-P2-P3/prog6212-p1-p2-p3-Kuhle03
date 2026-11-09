@@ -1,0 +1,197 @@
+RaceDay Part 3 — Simple Video Summary
+
+1. So what is Part 3?
+Part 3 is mainly about making the web application (MVC front end) for the RaceDay system.
+
+MY Part 2 API already does the core data stuff and the main business logic, but then Part 3 takes that and turns it into pages that users can actually click, tap, 
+
+So the rough flow is like:
+
+User → RaceDay MVC Website → Part 2 API → Database
+
+Important: the MVC website shouldn’t connect straight to the database. It has to talk to the Part 2 API first, then everything else follows.
+
+RaceDay_Part_3_MVC 
+
+2. Creating the MVC project
+This is an ASP.NET Core MVC application.
+
+The basic starter setup uses things like:
+
+dotnet new mvc -n RaceDayMVC
+cd RaceDayMVC
+
+Also, you add packages for session handling and JSON work or whatever you needed.
+
+Inside the project you’ll typically see folders such as:
+
+Controllers
+Models
+Views
+Services
+wwwroot
+
+3. Connecting MVC to the API
+The MVC app needs to communicate with your Part 2 RaceDay API.
+
+Because MVC is the place where you request things like:
+
+Events
+Categories
+Participants
+Enrolments
+Results
+User information
+
+But MVC should not create a second database, and it should not copy the business rules from Part 2 (even if the starter template kinda nudges you toward it).
+
+RaceDay_Part_3_MVC 
+
+4. Login and registration
+Users must be able to log in using the MVC website.
+
+There are two main user roles:
+
+Organiser
+
+and
+
+Participant
+
+After login, the MVC stores things like the user’s ID and the role in session.
+
+That role then decides what they’re allowed to see.  
+
+Example, in practice:
+
+Organiser → Organiser Dashboard  
+Participant → Find Events / My Events
+
+When the user logs out, it clears the session.
+
+RaceDay_Part_3_MVC_Complete_Document.docx
+
+5. Organiser features (what they can do)
+An organiser should get an organiser dashboard.
+
+They should be able to do stuff like:
+
+Create an event
+Edit an event
+Delete an event
+Manage categories
+View enrolments
+Enter results
+Upload an event banner
+
+The key thing is still, these actions must go through the Part 2 API, not directly from the MVC layer pretending it knows everything.
+
+RaceDay_Part_3_MVC 
+
+6. Participant features
+A participant should be able to do:
+
+Browse events
+View event details
+Enrol in an event
+View their events
+View their results
+Update their profile
+Upload a profile picture
+
+So they get a calmer, simpler website experience that focuses on joining, checking, and managing their own events.
+
+RaceDay_Part_3_MVC_Complete_Document.docx
+
+7. Azure Blob Storage (images)
+Part 3 also covers images.
+
+Example, organiser uploads an event banner:
+
+MVC
+ ↓
+Part 2 API
+ ↓
+Azure Blob Storage
+ ↓
+Image URL
+ ↓
+MVC displays the image
+
+Also, MVC should not directly connect to Azure Blob Storage. That upload handling is done by the Part 2 API.
+
+RaceDay_Part_3_MVC_Complete_Document.docx
+
+8. Docker
+Part 3 also has to run in a Docker container.
+
+The Dockerfile builds the MVC app, then runs the published ASP.NET app.
+
+The document idea is like:
+
+RaceDayMVC
+     ↓
+Docker
+     ↓
+Container
+     ↓
+Running web application
+
+The container port used in the document is 8080, so keep that in mind.
+
+RaceDay_Part_3_MVC_Complete_Document.docx
+
+9. User interface
+The website should feel professional and easy to use, not like a random prototype from 2016.
+
+It should include:
+
+Responsive pages
+Clear navigation
+Consistent colors and buttons
+Friendly error messages
+Form validation
+Proper image alt text
+Navigation that changes based on role
+
+Example: organiser sees Organiser Dashboard, while a participant sees Find Events and My Events.
+
+RaceDay_Part_3_MVC_Complete_Document.docx
+
+10. GitHub and CI/CD
+Part 3 still uses your existing RaceDay GitHub repository.
+
+The MVC project should be separated clearly like this:
+
+RaceDay
+│
+├── RaceDayAPI
+│
+├── RaceDayMVC
+│
+├── .github
+│   └── workflows
+│
+└── README.md
+
+GitHub Actions should automatically:
+
+Get the code
+Set up .NET
+Restore the project
+Build the MVC application
+
+That’s the CI/CD part.
+
+RaceDay_Part_3_MVC 
+
+“Part 3 is the MVC web application for RaceDay. The MVC front end communicates with the Part 2 API instead of connecting directly to the database. It allows organisers and participants to use different features based on their roles. It also includes session authentication, image handling through the API and Azure Blob Storage, Docker, responsive UI design, and GitHub Actions for building and testing the application.”
+
+And if they ask “What is the purpose of MVC?”, say:
+
+“MVC separates the application into Models, Views and Controllers. This makes the project easier to organise and maintain. The View is what the user sees, the Controller handles requests and logic, and the Model represents the data.”
+
+MY Part 3 checklist (one line)
+MVC → API connection → Login/session → Organiser → Participant → Images/Azure → Docker → UI → GitHub Actions → README/demo.
+
+
