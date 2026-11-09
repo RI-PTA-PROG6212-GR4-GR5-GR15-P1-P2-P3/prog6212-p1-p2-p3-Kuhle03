@@ -44,7 +44,7 @@ Test accounts: log in with an account that already exists in your Part 2 databas
 
    (bash / Git Bash: change `;` into `&&`)
 
-3. Open **http://localhost:8080**. The container version acts basically the same like the local version.
+3. Open **http://localhost:5080**. The container version acts basically the same like the local version.
 
 If port 8080 is taken, try e.g. `-p 8085:8080` and then go to http://localhost:8085.
 
