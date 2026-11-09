@@ -59,6 +59,8 @@ No passwords, no API keys and no Azure connection strings are stored inside this
 ## CI/CD
 
 The file `.github/workflows/dotnet.yml` restores builds and tests the API, then builds the MVC project and its Docker image on every push.
+screenshot of CI/CD: <img width="1312" height="412" alt="Screenshot 2026-11-09 171313" src="https://github.com/user-attachments/assets/d22eb2d8-add9-4084-9b7f-d299665fe50f" />
+
 
 ## YouTube video
 
